@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>배당율 비중 분석기</title>
+    <title>20251213_상위3개수정</title>
     <style>
         * {
             margin: 0;
@@ -544,20 +544,18 @@
                 };
             }
 
-            // 3&4: 처음 6개 중 상위 3개
-            const first6 = data.slice(0, 6);
-            const sorted6 = [...first6].sort((a, b) => a.dividend - b.dividend);
-            const top3 = sorted6.slice(0, 3);
-            const sum6 = first6.reduce((acc, item) => acc + item.dividend, 0);
+            // 3&4: 전체 데이터 중 상위 3개
+            const allSorted = [...data].sort((a, b) => a.dividend - b.dividend);
+            const top3Overall = allSorted.slice(0, 3);
+            const sumTop3 = top3Overall.reduce((acc, item) => acc + item.dividend, 0);
             
             const analysis34 = {
-                items: top3.map((item, index) => ({
+                items: top3Overall.map((item, index) => ({
                     ...item,
-                    proportion: (item.dividend / sum6) * 100,
-                    rank: index + 1,
-                    originalIndex: first6.indexOf(item) + 1
+                    proportion: (item.dividend / sumTop3) * 100,
+                    rank: index + 1
                 })),
-                sum: sum6
+                sum: sumTop3
             };
 
             displayResults(analysis12, analysis23, analysis34);
@@ -643,11 +641,11 @@
                 `;
             }
 
-            // 3&4: 처음 6개 중 상위 3개
+            // 3&4: 전체 데이터 중 상위 3개
             html += `
                 <div class="result-section">
                     <div class="section-title">
-                        🎯 처음 6개 중 상위 3개 (3 & 4)
+                        🎯 전체 데이터 중 상위 3개 (3 & 4)
                     </div>
                     <div class="proportion-cards">
             `;
@@ -655,7 +653,7 @@
             analysis34.items.forEach(item => {
                 html += `
                     <div class="proportion-card">
-                        <div class="proportion-label">${item.rank}위 (${item.originalIndex}번째)</div>
+                        <div class="proportion-label">${item.rank}위</div>
                         <div class="proportion-circles">
                             ${generateCircles(item.pair, 'green')}
                         </div>
@@ -728,14 +726,7 @@
                     ...Object.keys(cumulativeFreq)
                 ]);
                 
-                // 등장한 숫자 중 최대값 찾기
-                const maxNumber = Math.max(...Array.from(allNumbers).map(n => parseInt(n)));
-                
-                // 1부터 최대값까지 모든 숫자를 포함 (0회 등장한 숫자도 표시)
-                const sortedNumbers = [];
-                for (let i = 1; i <= maxNumber; i++) {
-                    sortedNumbers.push(i);
-                }
+                const sortedNumbers = Array.from(allNumbers).map(n => parseInt(n)).sort((a, b) => a - b);
                 
                 // 각 열의 최대/최소 값 계산 (색상 결정용)
                 const firstValues = sortedNumbers.map(n => firstFreq[n] || 0);
