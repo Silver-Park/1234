@@ -147,6 +147,8 @@
             justify-content: center;
             gap: 5px;
             margin: 15px 0;
+            font-size: 2.5em;
+            font-weight: bold;
         }
 
         .circle {
@@ -157,7 +159,7 @@
             align-items: center;
             justify-content: center;
             font-weight: bold;
-            font-size: 1.15em;
+            font-size: 1.4em;
             border: 2.5px solid;
         }
 
@@ -237,6 +239,8 @@
             justify-content: center;
             gap: 5px;
             margin: 15px 0;
+            font-size: 2.5em;
+            font-weight: bold;
         }
 
         .proportion-value {
@@ -282,44 +286,35 @@
             min-width: 600px;
             border-collapse: collapse;
             margin-top: 20px;
-            font-size: 0.95em;
+            font-size: 2.8em;
             table-layout: fixed;
         }
 
         .frequency-table th {
             background: #F3F4F6;
-            padding: 12px 8px;
+            padding: 16px 10px;
             text-align: center;
             font-weight: bold;
             color: #374151;
             border: 1px solid #E5E7EB;
             width: 10%;
+            font-size: 1.1em;
         }
 
         .frequency-table td {
-            padding: 10px 8px;
+            padding: 14px 10px;
             text-align: center;
             border: 1px solid #E5E7EB;
-            font-weight: 600;
+            font-weight: 700;
             width: 10%;
+            font-size: 2.2em;
         }
 
         .frequency-table .number-col {
             background: #FEF3C7;
             font-weight: bold;
             color: #333;
-        }
-
-        .frequency-table .number-circle {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 32px;
-            height: 32px;
-            border-radius: 50%;
-            background: #FCD34D;
-            border: 2px solid #F59E0B;
-            font-size: 0.9em;
+            font-size: 2.2em;
         }
         
         }
@@ -355,35 +350,37 @@
             }
             .dividend-card, .proportion-card { padding: 10px 5px; }
             .card-label, .proportion-label { font-size: 0.7em; }
-            .circle { width: 30px; height: 30px; font-size: 0.85em; }
+            .number-circles, .proportion-circles {
+                font-size: 2em;
+            }
             .dividend-value, .proportion-value { font-size: 1.2em; }
             .ratio-box { padding: 12px; }
             .ratio-value { font-size: 1.6em; }
             .ratio-formula { font-size: 0.8em; }
             
             .frequency-section { 
-                padding: 10px; 
+                padding: 15px; 
                 overflow-x: auto;
                 -webkit-overflow-scrolling: touch;
             }
-            .frequency-title { font-size: 1em; margin-bottom: 10px; }
+            .frequency-title { font-size: 1.2em; margin-bottom: 12px; }
             .frequency-table { 
-                font-size: 0.55em;
+                font-size: 0.75em;
                 min-width: auto;
                 width: 100%;
             }
             .frequency-table th, .frequency-table td { 
-                padding: 3px 1px;
-                font-size: 0.9em;
+                padding: 8px 3px;
+                font-size: 1em;
             }
             .frequency-table .number-circle { 
-                width: 18px;
-                height: 18px;
-                font-size: 0.65em;
-                border-width: 1px;
+                width: 28px;
+                height: 28px;
+                font-size: 0.9em;
+                border-width: 2px;
             }
         }
-        @media (max-width: 768px) {
+        @media (max-width: 1024px) {
             .container { padding: 15px; }
             h1 { font-size: 1.5em; }
             .input-section { padding: 20px; }
@@ -675,7 +672,7 @@
 
         function generateCircles(pair, colorClass) {
             const circles = pair.match(/[①-⑯]/g) || [];
-            return circles.map(circle => `<div class="circle ${colorClass}">${circle}</div>`).join('');
+            return circles.map(circle => circle).join(' ');
         }
 
         function displayFrequencyAnalysis(data) {
@@ -784,15 +781,15 @@
                     
                     html += `
                         <tr>
-                            <td class="number-col"><span class="number-circle">${circleChar}</span></td>
+                            <td class="number-col"><small style="font-size: 0.85em;">${circleChar}</small></td>
                             <td ${s1}>${f1}</td>
-                            <td class="number-col"><span class="number-circle">${circleChar}</span></td>
+                            <td class="number-col"><small style="font-size: 0.85em;">${circleChar}</small></td>
                             <td ${s2}>${f2}</td>
-                            <td class="number-col"><span class="number-circle">${circleChar}</span></td>
+                            <td class="number-col"><small style="font-size: 0.85em;">${circleChar}</small></td>
                             <td ${s3}>${f3}</td>
-                            <td class="number-col"><span class="number-circle">${circleChar}</span></td>
+                            <td class="number-col"><small style="font-size: 0.85em;">${circleChar}</small></td>
                             <td ${st}>${ft}</td>
-                            <td class="number-col"><span class="number-circle">${circleChar}</span></td>
+                            <td class="number-col"><small style="font-size: 0.85em;">${circleChar}</small></td>
                             <td ${sc}>${fc}</td>
                         </tr>
                     `;
@@ -824,37 +821,36 @@
         function getGradientStyle(value, min, max) {
             // 0인 경우 파란색
             if (value === 0) {
-                return 'style="background-color: #BFDBFE !important; color: #333;"';
+                return 'style="background-color: #BFDBFE !important; color: #333; font-size: 1.5em; font-weight: 800;"';
             }
             
             // 값이 하나만 있는 경우
             if (max === min) {
-                return 'style="background-color: #FFFFFF !important; color: #333;"';
+                return 'style="background-color: #FFFFFF !important; color: #333; font-size: 1.5em; font-weight: 800;"';
             }
             
             // 0~1 사이의 비율 계산 (min=0, max=1)
             const ratio = (value - min) / (max - min);
             const color = getGradientColor(ratio);
             
-            return `style="background-color: ${color} !important; color: #333;"`;
+            return `style="background-color: ${color} !important; color: #333; font-size: 1.5em; font-weight: 800;"`;
         }
 
         function getGradientColor(ratio) {
-            // 파란색(낮음) -> 흰색(중간) -> 빨간색(높음)
-            // 더 선명한 색상으로 변경
+            // 이전 버전처럼 매우 선명한 색상
             if (ratio <= 0.5) {
                 // 진한 파란색 -> 흰색
                 const t = ratio * 2; // 0~1
                 const r = Math.round(100 + (255 - 100) * t);
                 const g = Math.round(150 + (255 - 150) * t);
-                const b = Math.round(255);
+                const b = 255;
                 return `rgb(${r}, ${g}, ${b})`;
             } else {
                 // 흰색 -> 진한 빨간색
                 const t = (ratio - 0.5) * 2; // 0~1
                 const r = 255;
-                const g = Math.round(255 - (255 - 100) * t);
-                const b = Math.round(255 - (255 - 100) * t);
+                const g = Math.round(255 - (255 - 80) * t);
+                const b = Math.round(255 - (255 - 80) * t);
                 return `rgb(${r}, ${g}, ${b})`;
             }
         }
