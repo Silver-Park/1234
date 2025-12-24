@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>20251213_상위3개수정</title>
+    <title>동그라미 숫자 빈도 분석기</title>
     <style>
         * {
             margin: 0;
@@ -12,858 +12,952 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Helvetica', 'Arial', sans-serif;
+            background: linear-gradient(135deg, #EFF6FF 0%, #E0E7FF 100%);
             min-height: 100vh;
-            padding: 20px;
+            padding: 0.5rem;
+        }
+
+        @media (min-width: 640px) {
+            body {
+                padding: 1rem;
+            }
         }
 
         .container {
             max-width: 1400px;
             margin: 0 auto;
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
-            padding: 40px;
         }
 
         h1 {
+            font-size: 1.25rem;
+            font-weight: bold;
             text-align: center;
-            color: #333;
-            margin-bottom: 30px;
-            font-size: 2.5em;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.1);
+            margin-bottom: 0.75rem;
+            color: #3730A3;
+        }
+
+        @media (min-width: 640px) {
+            h1 {
+                font-size: 1.875rem;
+            }
         }
 
         .input-section {
-            background: #f8f9fa;
-            padding: 30px;
-            border-radius: 15px;
-            margin-bottom: 30px;
+            background: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            padding: 0.75rem;
+            margin-bottom: 0.75rem;
         }
 
         label {
             display: block;
-            margin-bottom: 10px;
-            font-weight: bold;
-            color: #555;
-            font-size: 1.1em;
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: #374151;
+        }
+
+        .hint {
+            font-size: 0.75rem;
+            color: #4B5563;
+            margin-bottom: 0.5rem;
+            line-height: 1.5;
         }
 
         textarea {
             width: 100%;
-            min-height: 200px;
-            padding: 15px;
-            border: 2px solid #ddd;
-            border-radius: 10px;
-            font-size: 1em;
+            height: 10rem;
+            padding: 0.75rem;
+            border: 2px solid #D1D5DB;
+            border-radius: 0.5rem;
             font-family: 'Courier New', monospace;
+            font-size: 0.875rem;
             resize: vertical;
-            transition: all 0.3s;
+            transition: border-color 0.3s;
         }
 
         textarea:focus {
             outline: none;
-            border-color: #667eea;
-            box-shadow: 0 0 10px rgba(102, 126, 234, 0.3);
-        }
-
-        .hint {
-            font-size: 0.9em;
-            color: #666;
-            margin-top: 8px;
-            font-style: italic;
+            border-color: #6366F1;
         }
 
         button {
+            margin-top: 0.75rem;
             width: 100%;
-            padding: 18px;
-            background: #5865F2;
+            background: #6366F1;
             color: white;
-            border: none;
-            border-radius: 12px;
-            font-size: 1.2em;
             font-weight: bold;
+            padding: 0.75rem 1rem;
+            border-radius: 0.5rem;
+            border: none;
+            font-size: 1rem;
             cursor: pointer;
-            transition: all 0.3s;
-            margin-top: 20px;
+            transition: all 0.2s;
         }
 
         button:hover {
-            background: #4752C4;
-            transform: translateY(-2px);
-            box-shadow: 0 10px 30px rgba(88, 101, 242, 0.4);
+            background: #4F46E5;
         }
 
-        .results-grid {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 25px;
-            margin-top: 30px;
+        button:active {
+            background: #4338CA;
         }
 
-        .result-section {
-            background: #E8EBF7;
-            padding: 25px;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+        .analysis-box {
+            background: linear-gradient(135deg, #F5F3FF 0%, #EFF6FF 100%);
+            border-radius: 0.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            border: 1px solid #E5E7EB;
         }
 
-        .section-title {
-            color: #333;
-            margin-bottom: 20px;
-            font-size: 1.3em;
+        .analysis-title {
+            font-size: 1.125rem;
             font-weight: bold;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            margin-bottom: 0.75rem;
+            color: #1F2937;
         }
 
-        .cards-container {
+        .cards-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-            margin-bottom: 20px;
-        }
-        
+            gap: 0.75rem;
+            margin-bottom: 0.75rem;
         }
 
-        .dividend-card {
-            background: #F5F7FB;
-            padding: 20px 15px;
-            border-radius: 12px;
+        .card {
+            background: white;
+            border-radius: 0.5rem;
+            padding: 0.75rem;
+            box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.1);
             text-align: center;
         }
 
         .card-label {
-            font-size: 0.85em;
-            color: #6B7280;
-            margin-bottom: 12px;
+            font-size: 0.75rem;
+            color: #4B5563;
+            margin-bottom: 0.5rem;
             font-weight: 600;
         }
 
-        .number-circles {
+        .number-display {
             display: flex;
             justify-content: center;
-            gap: 5px;
-            margin: 15px 0;
-            font-size: 2.5em;
-            font-weight: bold;
+            gap: 0.25rem;
+            font-size: 1.5rem;
+            margin: 0.5rem 0;
         }
 
-        .circle {
-            width: 42px;
-            height: 42px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-weight: bold;
-            font-size: 1.4em;
-            border: 2.5px solid;
-        }
-
-        .circle.blue {
-            background: #DBEAFE;
-            color: #2563EB;
-            border-color: #2563EB;
-        }
-
-        .circle.purple {
-            background: #E9D5FF;
-            color: #9333EA;
-            border-color: #9333EA;
-        }
-
-        .circle.green {
-            background: #D1FAE5;
-            color: #059669;
-            border-color: #059669;
+        .number-display span {
+            font-size: 1.875rem;
         }
 
         .dividend-value {
-            font-size: 1.8em;
+            font-size: 1.25rem;
             font-weight: bold;
             color: #1F2937;
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 0.25rem;
+        }
+
+        .proportion-value {
+            font-size: 1.125rem;
+            font-weight: bold;
+            color: #059669;
+            margin-top: 0.25rem;
+        }
+
+        .ratio-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.75rem;
         }
 
         .ratio-box {
+            border-radius: 0.5rem;
+            padding: 0.75rem;
+            border: 1px solid #D1D5DB;
+        }
+
+        .ratio-box.yellow {
             background: #FEF3C7;
-            padding: 20px;
-            border-radius: 12px;
+            border-color: #FDE68A;
         }
 
         .ratio-label {
-            font-size: 0.9em;
-            color: #92400E;
-            margin-bottom: 8px;
+            font-size: 0.75rem;
+            margin-bottom: 0.25rem;
             font-weight: 600;
         }
 
         .ratio-value {
-            font-size: 2.2em;
+            font-size: 1.5rem;
             font-weight: bold;
-            color: #F59E0B;
-            margin-bottom: 8px;
+            margin-bottom: 0.25rem;
         }
 
         .ratio-formula {
-            font-size: 0.9em;
-            color: #78716C;
+            font-size: 0.75rem;
+            margin-top: 0.25rem;
         }
 
-        .proportion-cards {
-            display: grid;
-            grid-template-columns: repeat(3, 1fr);
-            gap: 15px;
-        }
-        
-        }
-
-        .proportion-card {
-            background: #F5F7FB;
-            padding: 20px 15px;
-            border-radius: 12px;
-            text-align: center;
+        .total-ratio-box {
+            border-radius: 0.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+            border: 2px solid #E5E7EB;
         }
 
-        .proportion-label {
-            font-size: 0.85em;
-            color: #6B7280;
-            margin-bottom: 12px;
-            font-weight: 600;
-        }
-
-        .proportion-circles {
-            display: flex;
-            justify-content: center;
-            gap: 5px;
-            margin: 15px 0;
-            font-size: 2.5em;
+        .total-ratio-title {
+            font-size: 1.125rem;
             font-weight: bold;
+            margin-bottom: 0.5rem;
+            color: black;
         }
 
-        .proportion-value {
-            font-size: 1.8em;
+        .total-ratio-value {
+            font-size: 1.875rem;
             font-weight: bold;
-            color: #059669;
-            margin-top: 10px;
+            color: black;
         }
 
-        .error {
-            background: #FEE2E2;
-            border: 2px solid #FCA5A5;
-            color: #991B1B;
-            padding: 15px;
-            border-radius: 10px;
-            margin-top: 20px;
-            text-align: center;
+        .total-ratio-formula {
+            font-size: 0.875rem;
+            color: black;
+            margin-top: 0.25rem;
         }
 
-        /* 빈도 분석 테이블 스타일 */
-        .frequency-section {
-            margin-top: 30px;
+        .info-box {
             background: white;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
-            overflow-x: auto;
-        }
-        
+            border-radius: 0.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            padding: 0.75rem;
+            margin-bottom: 0.75rem;
         }
 
-        .frequency-title {
-            font-size: 1.5em;
+        .info-title {
+            font-size: 0.875rem;
             font-weight: bold;
-            color: #333;
-            margin-bottom: 20px;
-            padding-bottom: 10px;
-            border-bottom: 3px solid #667eea;
+            margin-bottom: 0.5rem;
+            color: #374151;
         }
 
-        .frequency-table {
+        .gradient-bar {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.75rem;
+        }
+
+        .gradient-box {
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .color-sample {
+            width: 1.25rem;
+            height: 1.25rem;
+            border-radius: 0.25rem;
+        }
+
+        .gradient-fill {
+            flex: 1;
+            height: 1.25rem;
+            border-radius: 0.25rem;
+            background: linear-gradient(to right, rgb(96, 165, 250), rgb(255, 255, 255), rgb(239, 68, 68));
+        }
+
+        .info-text {
+            font-size: 0.75rem;
+            color: #4B5563;
+            margin-top: 0.5rem;
+        }
+
+        .table-container {
+            background: white;
+            border-radius: 0.5rem;
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+            overflow-x: auto;
+            margin-bottom: 1rem;
+        }
+
+        .table-title {
+            font-size: 1rem;
+            font-weight: bold;
+            padding: 0.75rem;
+            background: #F9FAFB;
+            border-bottom: 1px solid #E5E7EB;
+        }
+
+        table {
             width: 100%;
-            min-width: 600px;
             border-collapse: collapse;
-            margin-top: 20px;
-            font-size: 2.8em;
+            font-size: 0.875rem;
             table-layout: fixed;
         }
 
-        .frequency-table th {
+        th, td {
+            border: 1px solid #D1D5DB;
+            padding: 0.5rem;
+            text-align: center;
+        }
+
+        th {
             background: #F3F4F6;
-            padding: 16px 10px;
-            text-align: center;
             font-weight: bold;
-            color: #374151;
-            border: 1px solid #E5E7EB;
-            width: 10%;
-            font-size: 1.1em;
+            font-size: 0.875rem;
         }
 
-        .frequency-table td {
-            padding: 14px 10px;
-            text-align: center;
-            border: 1px solid #E5E7EB;
-            font-weight: 700;
-            width: 10%;
-            font-size: 2.2em;
+        th.orange-bg {
+            background: #FED7AA;
         }
 
-        .frequency-table .number-col {
+        td.yellow-bg {
+            background: #FDE047;
+            font-size: 1.5rem;
+        }
+
+        td.orange-bg {
             background: #FEF3C7;
+        }
+
+        td.value-cell {
             font-weight: bold;
-            color: #333;
-            font-size: 2.2em;
-        }
-        
-        }
-
-        .freq-high {
-            background: #FCA5A5 !important;
-            color: #333;
-        }
-
-        .freq-medium {
-            background: #FED7D7 !important;
-            color: #333;
-        }
-
-        .freq-low {
-            background: #BFDBFE !important;
-            color: #333;
-        }
-
-        .freq-zero {
-            background: #DBEAFE !important;
-            color: #333;
-        }
-
-            h1 { font-size: 1.5em; }
-            .input-section { padding: 20px; }
-            textarea { min-height: 150px; font-size: 0.9em; }
-            button { padding: 15px; font-size: 1.1em; }
-            
-            .cards-container, .proportion-cards {
-                grid-template-columns: repeat(3, 1fr);
-                gap: 6px;
-            }
-            .dividend-card, .proportion-card { padding: 10px 5px; }
-            .card-label, .proportion-label { font-size: 0.7em; }
-            .number-circles, .proportion-circles {
-                font-size: 2em;
-            }
-            .dividend-value, .proportion-value { font-size: 1.2em; }
-            .ratio-box { padding: 12px; }
-            .ratio-value { font-size: 1.6em; }
-            .ratio-formula { font-size: 0.8em; }
-            
-            .frequency-section { 
-                padding: 15px; 
-                overflow-x: auto;
-                -webkit-overflow-scrolling: touch;
-            }
-            .frequency-title { font-size: 1.2em; margin-bottom: 12px; }
-            .frequency-table { 
-                font-size: 0.75em;
-                min-width: auto;
-                width: 100%;
-            }
-            .frequency-table th, .frequency-table td { 
-                padding: 8px 3px;
-                font-size: 1em;
-            }
-            .frequency-table .number-circle { 
-                width: 28px;
-                height: 28px;
-                font-size: 0.9em;
-                border-width: 2px;
-            }
-        }
-        @media (max-width: 1024px) {
-            .container { padding: 15px; }
-            h1 { font-size: 1.5em; }
-            .input-section { padding: 20px; }
-            textarea { min-height: 150px; font-size: 0.9em; }
-            button { padding: 15px; font-size: 1.1em; }
-            
-            .cards-container, .proportion-cards {
-                grid-template-columns: repeat(3, 1fr);
-                gap: 6px;
-            }
-            .dividend-card, .proportion-card { padding: 10px 5px; }
-            .card-label, .proportion-label { font-size: 0.7em; }
-            .circle { width: 30px; height: 30px; font-size: 0.85em; }
-            .dividend-value, .proportion-value { font-size: 1.2em; }
-            .ratio-box { padding: 12px; }
-            .ratio-value { font-size: 1.6em; }
-            .ratio-formula { font-size: 0.8em; }
-            
-            .frequency-section { 
-                padding: 10px; 
-                overflow-x: auto;
-                -webkit-overflow-scrolling: touch;
-            }
-            .frequency-title { font-size: 1em; margin-bottom: 10px; }
-            .frequency-table { 
-                font-size: 0.55em;
-                width: 100%;
-            }
-            .frequency-table th, .frequency-table td { 
-                padding: 3px 1px;
-                font-size: 0.9em;
-            }
-            .frequency-table .number-circle { 
-                width: 18px;
-                height: 18px;
-                font-size: 0.65em;
-                border-width: 1px;
-            }
+            font-size: 1rem;
         }
     </style>
-            <label>배당율 데이터 입력</label>
-            <textarea id="dataInput" placeholder="예시:
-③⑧	2.6	③⑤	5.0	③⑦	9.5
-③④	11.1	⑧③	13.2	③⑨	16.9
-⑤③	18.2	③①	20.1	③②	21.4"></textarea>
-            <div class="hint">* 각 줄에 "번호쌍 배당율" 형식으로 입력하세요. 탭이나 공백으로 구분됩니다.</div>
-            <button onclick="analyze()">분석하기</button>
+</head>
+<body>
+    <div class="container">
+        <h1>🔢 동그라미 숫자 빈도 분석기</h1>
+
+        <div class="input-section">
+            <label>데이터 입력 (자유 형식)</label>
+            <p class="hint">
+                동그라미 숫자 6개가 1줄입니다. 숫자나 공백은 무시되며 동그라미 숫자만 추출됩니다.<br/>
+                예: ⑥⑪ 4.6 ⑥④ 6.8 ⑥③ 7.3 (이렇게 입력해도 자동으로 ⑥⑪⑥④⑥③로 인식)
+            </p>
+            <textarea id="inputData" placeholder="예시:
+⑥⑪ 4.6 ⑥④ 6.8 ⑥③ 7.3
+⑥⑤ 8.5 ⑪⑥ 11.6 ⑥② 13.5"></textarea>
+            <button onclick="analyzeData()">분석하기</button>
         </div>
 
         <div id="results"></div>
-        <div id="frequency-analysis"></div>
     </div>
 
     <script>
-        function parseData(input) {
-            const lines = input.trim().split('\n');
-            const data = [];
+        let results = null;
+        let analysis1 = null;
+        let analysis2 = null;
+        let analysis3 = null;
+
+        function extractNumbers(pair) {
+            return pair.split('');
+        }
+
+        function analyzeData() {
+            const inputData = document.getElementById('inputData').value;
             
-            for (const line of lines) {
-                const parts = line.trim().split(/\s+/);
+            if (!inputData.trim()) {
+                alert('데이터를 입력해주세요!');
+                return;
+            }
+
+            const circledNumbers = ['①', '②', '③', '④', '⑤', '⑥', '⑦', '⑧', '⑨', '⑩', '⑪', '⑫', '⑬', '⑭', '⑮', '⑯'];
+            
+            const pairs = [];
+            const dividends = [];
+            
+            const tokens = inputData.match(/[①②③④⑤⑥⑦⑧⑨⑩⑪⑫⑬⑭⑮⑯]|[\d.]+/g) || [];
+            
+            for (let i = 0; i < tokens.length - 2; i++) {
+                if (circledNumbers.includes(tokens[i]) && 
+                    circledNumbers.includes(tokens[i + 1]) &&
+                    !isNaN(parseFloat(tokens[i + 2]))) {
+                    pairs.push(tokens[i] + tokens[i + 1]);
+                    dividends.push(parseFloat(tokens[i + 2]));
+                }
+            }
+            
+            const sortedData = pairs.map((pair, idx) => ({
+                pair: pair,
+                dividend: dividends[idx]
+            })).sort((a, b) => a.dividend - b.dividend);
+            
+            // 교차점분석1
+            let lowest1 = null;
+            let lowest2 = null;
+            let crossPoint1 = null;
+            
+            if (sortedData.length >= 2) {
+                lowest1 = sortedData[0];
+                lowest2 = sortedData[1];
                 
-                for (let i = 0; i < parts.length; i += 2) {
-                    if (i + 1 < parts.length) {
-                        const pair = parts[i];
-                        const dividend = parseFloat(parts[i + 1]);
+                const num1_1 = lowest1.pair[0];
+                const num1_2 = lowest1.pair[1];
+                const num2_1 = lowest2.pair[0];
+                const num2_2 = lowest2.pair[1];
+                
+                let crossNum1, crossNum2;
+                
+                if (num1_1 === num2_1) {
+                    crossNum1 = num1_2;
+                    crossNum2 = num2_2;
+                } else if (num1_1 === num2_2) {
+                    crossNum1 = num1_2;
+                    crossNum2 = num2_1;
+                } else if (num1_2 === num2_1) {
+                    crossNum1 = num1_1;
+                    crossNum2 = num2_2;
+                } else if (num1_2 === num2_2) {
+                    crossNum1 = num1_1;
+                    crossNum2 = num2_1;
+                }
+                
+                const crossPair1_1 = crossNum1 + crossNum2;
+                const crossPair1_2 = crossNum2 + crossNum1;
+                
+                const crossIdx1 = pairs.indexOf(crossPair1_1);
+                const crossIdx2 = pairs.indexOf(crossPair1_2);
+                
+                if (crossIdx1 !== -1) {
+                    crossPoint1 = {
+                        pair: crossPair1_1,
+                        dividend: dividends[crossIdx1]
+                    };
+                } else if (crossIdx2 !== -1) {
+                    crossPoint1 = {
+                        pair: crossPair1_2,
+                        dividend: dividends[crossIdx2]
+                    };
+                }
+                
+                if (crossPoint1) {
+                    const sum1 = lowest1.dividend + lowest2.dividend + crossPoint1.dividend;
+                    const ratio1 = ((lowest1.dividend * lowest2.dividend) / crossPoint1.dividend).toFixed(6);
+                    const addRatio1 = ((lowest1.dividend + lowest2.dividend) / crossPoint1.dividend).toFixed(6);
+                    
+                    analysis1 = {
+                        ratio: ratio1,
+                        addRatio: addRatio1,
+                        items: [
+                            {
+                                label: '최저배당1',
+                                pair: lowest1.pair,
+                                dividend: lowest1.dividend,
+                                proportion: (lowest1.dividend / sum1) * 100
+                            },
+                            {
+                                label: '최저배당2',
+                                pair: lowest2.pair,
+                                dividend: lowest2.dividend,
+                                proportion: (lowest2.dividend / sum1) * 100
+                            },
+                            {
+                                label: '교차점',
+                                pair: crossPoint1.pair,
+                                dividend: crossPoint1.dividend,
+                                proportion: (crossPoint1.dividend / sum1) * 100
+                            }
+                        ]
+                    };
+                }
+            }
+            
+            // 교차점분석2
+            if (analysis1 && sortedData.length >= 3) {
+                const usedNumbers1 = new Set([
+                    ...extractNumbers(analysis1.items[0].pair),
+                    ...extractNumbers(analysis1.items[1].pair),
+                    ...extractNumbers(analysis1.items[2].pair)
+                ]);
+                
+                const availablePairs = sortedData.filter(item => {
+                    const nums = extractNumbers(item.pair);
+                    return !nums.some(n => usedNumbers1.has(n));
+                });
+                
+                if (availablePairs.length >= 2) {
+                    const pair2_1 = availablePairs[0];
+                    const pair2_2 = availablePairs[1];
+                    
+                    const num1_1 = pair2_1.pair[0];
+                    const num1_2 = pair2_1.pair[1];
+                    const num2_1 = pair2_2.pair[0];
+                    const num2_2 = pair2_2.pair[1];
+                    
+                    let crossNum1, crossNum2;
+                    
+                    if (num1_1 === num2_1) {
+                        crossNum1 = num1_2;
+                        crossNum2 = num2_2;
+                    } else if (num1_1 === num2_2) {
+                        crossNum1 = num1_2;
+                        crossNum2 = num2_1;
+                    } else if (num1_2 === num2_1) {
+                        crossNum1 = num1_1;
+                        crossNum2 = num2_2;
+                    } else if (num1_2 === num2_2) {
+                        crossNum1 = num1_1;
+                        crossNum2 = num2_1;
+                    }
+                    
+                    const crossPair2_1 = crossNum1 + crossNum2;
+                    const crossPair2_2 = crossNum2 + crossNum1;
+                    
+                    const crossIdx1 = pairs.indexOf(crossPair2_1);
+                    const crossIdx2 = pairs.indexOf(crossPair2_2);
+                    
+                    let crossPoint2 = null;
+                    if (crossIdx1 !== -1) {
+                        crossPoint2 = {
+                            pair: crossPair2_1,
+                            dividend: dividends[crossIdx1]
+                        };
+                    } else if (crossIdx2 !== -1) {
+                        crossPoint2 = {
+                            pair: crossPair2_2,
+                            dividend: dividends[crossIdx2]
+                        };
+                    }
+                    
+                    if (crossPoint2) {
+                        const sum2 = pair2_1.dividend + pair2_2.dividend + crossPoint2.dividend;
+                        const ratio2 = ((pair2_1.dividend * pair2_2.dividend) / crossPoint2.dividend).toFixed(6);
+                        const addRatio2 = ((pair2_1.dividend + pair2_2.dividend) / crossPoint2.dividend).toFixed(6);
                         
-                        if (!isNaN(dividend) && pair) {
-                            data.push({
-                                pair: pair,
-                                dividend: dividend
-                            });
-                        }
+                        analysis2 = {
+                            ratio: ratio2,
+                            addRatio: addRatio2,
+                            items: [
+                                {
+                                    label: '1번짝',
+                                    pair: pair2_1.pair,
+                                    dividend: pair2_1.dividend,
+                                    proportion: (pair2_1.dividend / sum2) * 100
+                                },
+                                {
+                                    label: '2번짝',
+                                    pair: pair2_2.pair,
+                                    dividend: pair2_2.dividend,
+                                    proportion: (pair2_2.dividend / sum2) * 100
+                                },
+                                {
+                                    label: '교차점',
+                                    pair: crossPoint2.pair,
+                                    dividend: crossPoint2.dividend,
+                                    proportion: (crossPoint2.dividend / sum2) * 100
+                                }
+                            ]
+                        };
                     }
                 }
             }
             
-            return data;
-        }
-
-        function extractNumbers(pair) {
-            // 동그라미 숫자를 추출 (①-⑳)
-            const matches = pair.match(/[①-⑳]/g) || [];
-            return matches.map(circle => {
-                const code = circle.charCodeAt(0);
-                if (code >= 0x2460 && code <= 0x2468) return code - 0x245F; // ①-⑨
-                if (code === 0x2469) return 10; // ⑩
-                if (code >= 0x246A && code <= 0x2473) return code - 0x246A + 11; // ⑪-⑳
-                return 0;
-            });
-        }
-
-        function findCrossPoint(data, pair1, pair2) {
-            const nums1 = extractNumbers(pair1);
-            const nums2 = extractNumbers(pair2);
-            
-            // 공통되지 않은 숫자 찾기
-            const unique1 = nums1.filter(n => !nums2.includes(n));
-            const unique2 = nums2.filter(n => !nums1.includes(n));
-            
-            // 교차점 조합 생성
-            const crossNumbers = [...unique1, ...unique2].sort((a, b) => a - b);
-            
-            // 데이터에서 교차점 찾기
-            for (const item of data) {
-                const itemNums = extractNumbers(item.pair).sort((a, b) => a - b);
-                if (JSON.stringify(itemNums) === JSON.stringify(crossNumbers)) {
-                    return item;
+            // 교차점분석3
+            if (analysis1 && analysis2 && sortedData.length >= 3) {
+                const usedNumbers2 = new Set([
+                    ...extractNumbers(analysis1.items[0].pair),
+                    ...extractNumbers(analysis1.items[1].pair),
+                    ...extractNumbers(analysis1.items[2].pair),
+                    ...extractNumbers(analysis2.items[0].pair),
+                    ...extractNumbers(analysis2.items[1].pair),
+                    ...extractNumbers(analysis2.items[2].pair)
+                ]);
+                
+                const availablePairs = sortedData.filter(item => {
+                    const nums = extractNumbers(item.pair);
+                    return !nums.some(n => usedNumbers2.has(n));
+                });
+                
+                if (availablePairs.length >= 2) {
+                    const pair3_1 = availablePairs[0];
+                    const pair3_2 = availablePairs[1];
+                    
+                    const num1_1 = pair3_1.pair[0];
+                    const num1_2 = pair3_1.pair[1];
+                    const num2_1 = pair3_2.pair[0];
+                    const num2_2 = pair3_2.pair[1];
+                    
+                    let crossNum1, crossNum2;
+                    
+                    if (num1_1 === num2_1) {
+                        crossNum1 = num1_2;
+                        crossNum2 = num2_2;
+                    } else if (num1_1 === num2_2) {
+                        crossNum1 = num1_2;
+                        crossNum2 = num2_1;
+                    } else if (num1_2 === num2_1) {
+                        crossNum1 = num1_1;
+                        crossNum2 = num2_2;
+                    } else if (num1_2 === num2_2) {
+                        crossNum1 = num1_1;
+                        crossNum2 = num2_1;
+                    }
+                    
+                    const crossPair3_1 = crossNum1 + crossNum2;
+                    const crossPair3_2 = crossNum2 + crossNum1;
+                    
+                    const crossIdx1 = pairs.indexOf(crossPair3_1);
+                    const crossIdx2 = pairs.indexOf(crossPair3_2);
+                    
+                    let crossPoint3 = null;
+                    if (crossIdx1 !== -1) {
+                        crossPoint3 = {
+                            pair: crossPair3_1,
+                            dividend: dividends[crossIdx1]
+                        };
+                    } else if (crossIdx2 !== -1) {
+                        crossPoint3 = {
+                            pair: crossPair3_2,
+                            dividend: dividends[crossIdx2]
+                        };
+                    }
+                    
+                    if (crossPoint3) {
+                        const sum3 = pair3_1.dividend + pair3_2.dividend + crossPoint3.dividend;
+                        const ratio3 = ((pair3_1.dividend * pair3_2.dividend) / crossPoint3.dividend).toFixed(6);
+                        const addRatio3 = ((pair3_1.dividend + pair3_2.dividend) / crossPoint3.dividend).toFixed(6);
+                        
+                        analysis3 = {
+                            ratio: ratio3,
+                            addRatio: addRatio3,
+                            items: [
+                                {
+                                    label: '1위',
+                                    pair: pair3_1.pair,
+                                    dividend: pair3_1.dividend,
+                                    proportion: (pair3_1.dividend / sum3) * 100
+                                },
+                                {
+                                    label: '2위',
+                                    pair: pair3_2.pair,
+                                    dividend: pair3_2.dividend,
+                                    proportion: (pair3_2.dividend / sum3) * 100
+                                },
+                                {
+                                    label: '교차점',
+                                    pair: crossPoint3.pair,
+                                    dividend: crossPoint3.dividend,
+                                    proportion: (crossPoint3.dividend / sum3) * 100
+                                }
+                            ]
+                        };
+                    }
                 }
             }
             
-            return null;
-        }
-
-        function analyze() {
-            const input = document.getElementById('dataInput').value.trim();
-            const resultsDiv = document.getElementById('results');
-            
-            if (!input) {
-                resultsDiv.innerHTML = '<div class="error">데이터를 입력해주세요.</div>';
-                return;
+            // 빈도 분석
+            const allCircledNums = [];
+            for (let char of inputData) {
+                if (circledNumbers.includes(char)) {
+                    allCircledNums.push(char);
+                }
             }
-
-            const data = parseData(input);
             
-            if (data.length < 6) {
-                resultsDiv.innerHTML = '<div class="error">최소 6개 이상의 데이터를 입력해주세요.</div>';
-                return;
+            const lines = [];
+            for (let i = 0; i < allCircledNums.length; i += 6) {
+                const lineNums = allCircledNums.slice(i, i + 6);
+                if (lineNums.length > 0) {
+                    lines.push(lineNums.join(' '));
+                }
             }
-
-            // 1&2: 최저배당 분석
-            const sorted = [...data].sort((a, b) => a.dividend - b.dividend);
-            const lowest1 = sorted[0];
-            const lowest2 = sorted[1];
-            const crossPoint = findCrossPoint(data, lowest1.pair, lowest2.pair);
             
-            let analysis12 = null;
-            if (crossPoint) {
-                const ratio = (lowest1.dividend * lowest2.dividend) / crossPoint.dividend;
-                analysis12 = {
-                    lowest1,
-                    lowest2,
-                    crossPoint,
-                    ratio
-                };
-            }
-
-            // 2&3: 3개 짝의 비중
-            let analysis23 = null;
-            if (analysis12) {
-                const sum = lowest1.dividend + lowest2.dividend + crossPoint.dividend;
-                analysis23 = {
-                    items: [
-                        { ...lowest1, proportion: (lowest1.dividend / sum) * 100, label: '1번짝' },
-                        { ...lowest2, proportion: (lowest2.dividend / sum) * 100, label: '2번짝' },
-                        { ...crossPoint, proportion: (crossPoint.dividend / sum) * 100, label: '3번짝' }
-                    ],
-                    sum
-                };
-            }
-
-            // 3&4: 전체 데이터 중 상위 3개
-            const allSorted = [...data].sort((a, b) => a.dividend - b.dividend);
-            const top3Overall = allSorted.slice(0, 3);
-            const sumTop3 = top3Overall.reduce((acc, item) => acc + item.dividend, 0);
-            
-            const analysis34 = {
-                items: top3Overall.map((item, index) => ({
-                    ...item,
-                    proportion: (item.dividend / sumTop3) * 100,
-                    rank: index + 1
-                })),
-                sum: sumTop3
+            const countNumbers = (text) => {
+                const counts = {};
+                circledNumbers.forEach(num => {
+                    const matches = text.match(new RegExp(num, 'g'));
+                    counts[num] = matches ? matches.length : 0;
+                });
+                return counts;
             };
 
-            displayResults(analysis12, analysis23, analysis34);
-            
-            // 빈도 분석 추가
-            displayFrequencyAnalysis(data);
+            const lines1to3 = lines.slice(0, 3).join('\n');
+            const result1to3 = countNumbers(lines1to3);
+            const lines4to6 = lines.slice(3, 6).join('\n');
+            const result4to6 = countNumbers(lines4to6);
+            const lines7to10 = lines.slice(6, 10).join('\n');
+            const result7to10 = countNumbers(lines7to10);
+            const lines1to10 = lines.slice(0, 10).join('\n');
+            const result1to10 = countNumbers(lines1to10);
+
+            let result11to13 = null, result14to16 = null, result17to20 = null, result11to20 = null, resultCumulative20 = null;
+            if (lines.length > 10) {
+                result11to13 = countNumbers(lines.slice(10, 13).join('\n'));
+                result14to16 = countNumbers(lines.slice(13, 16).join('\n'));
+                result17to20 = countNumbers(lines.slice(16, 20).join('\n'));
+                result11to20 = countNumbers(lines.slice(10, 20).join('\n'));
+                resultCumulative20 = countNumbers(lines.slice(0, 20).join('\n'));
+            }
+
+            let result21to23 = null, result24to26 = null, result27to30 = null, result21to30 = null, resultCumulative30 = null;
+            if (lines.length > 20) {
+                result21to23 = countNumbers(lines.slice(20, 23).join('\n'));
+                result24to26 = countNumbers(lines.slice(23, 26).join('\n'));
+                result27to30 = countNumbers(lines.slice(26, 30).join('\n'));
+                result21to30 = countNumbers(lines.slice(20, 30).join('\n'));
+                resultCumulative30 = countNumbers(lines.slice(0, 30).join('\n'));
+            }
+
+            let result31to33 = null, result34to36 = null, result37to40 = null, result31to40 = null, resultCumulative40 = null;
+            if (lines.length > 30) {
+                result31to33 = countNumbers(lines.slice(30, 33).join('\n'));
+                result34to36 = countNumbers(lines.slice(33, 36).join('\n'));
+                result37to40 = countNumbers(lines.slice(36, 40).join('\n'));
+                result31to40 = countNumbers(lines.slice(30, 40).join('\n'));
+                resultCumulative40 = countNumbers(lines.slice(0, 40).join('\n'));
+            }
+
+            let result41to43 = null, result44to46 = null, result47to50 = null, result41to50 = null, resultCumulative50 = null;
+            if (lines.length > 40) {
+                result41to43 = countNumbers(lines.slice(40, 43).join('\n'));
+                result44to46 = countNumbers(lines.slice(43, 46).join('\n'));
+                result47to50 = countNumbers(lines.slice(46, 50).join('\n'));
+                result41to50 = countNumbers(lines.slice(40, 50).join('\n'));
+                resultCumulative50 = countNumbers(lines.slice(0, 50).join('\n'));
+            }
+
+            results = {
+                first10: { section1: result1to3, section2: result4to6, section3: result7to10, all: result1to10 },
+                second10: result11to20 ? { section1: result11to13, section2: result14to16, section3: result17to20, all: result11to20, cumulative: resultCumulative20 } : null,
+                third10: result21to30 ? { section1: result21to23, section2: result24to26, section3: result27to30, all: result21to30, cumulative: resultCumulative30 } : null,
+                fourth10: result31to40 ? { section1: result31to33, section2: result34to36, section3: result37to40, all: result31to40, cumulative: resultCumulative40 } : null,
+                fifth10: result41to50 ? { section1: result41to43, section2: result44to46, section3: result47to50, all: result41to50, cumulative: resultCumulative50 } : null
+            };
+
+            renderResults();
         }
 
-        function displayResults(analysis12, analysis23, analysis34) {
-            const resultsDiv = document.getElementById('results');
-            
-            let html = '<div class="results-grid">';
-            
-            // 1&2: 최저배당
-            if (analysis12) {
-                html += `
-                    <div class="result-section">
-                        <div class="section-title">
-                            📊 최저배당 (1 & 2)
-                        </div>
-                        
-                        <div class="cards-container">
-                            <div class="dividend-card">
-                                <div class="card-label">최저배당1</div>
-                                <div class="number-circles">
-                                    ${generateCircles(analysis12.lowest1.pair, 'blue')}
-                                </div>
-                                <div class="dividend-value">${analysis12.lowest1.dividend}</div>
-                            </div>
-                            
-                            <div class="dividend-card">
-                                <div class="card-label">최저배당2</div>
-                                <div class="number-circles">
-                                    ${generateCircles(analysis12.lowest2.pair, 'purple')}
-                                </div>
-                                <div class="dividend-value">${analysis12.lowest2.dividend}</div>
-                            </div>
-                            
-                            <div class="dividend-card">
-                                <div class="card-label">교차점</div>
-                                <div class="number-circles">
-                                    ${generateCircles(analysis12.crossPoint.pair, 'green')}
-                                </div>
-                                <div class="dividend-value">${analysis12.crossPoint.dividend}</div>
-                            </div>
-                        </div>
-                        
-                        <div class="ratio-box">
-                            <div class="ratio-label">비율</div>
-                            <div class="ratio-value">${analysis12.ratio.toFixed(6)}</div>
-                            <div class="ratio-formula">= (${analysis12.lowest1.dividend} × ${analysis12.lowest2.dividend}) / ${analysis12.crossPoint.dividend}</div>
-                        </div>
-                    </div>
-                `;
+        function getGradientColor(count, minCount, maxCount) {
+            if (maxCount === 0) return 'rgb(96, 165, 250)';
+            const ratio = count / maxCount;
+            let r, g, b;
+            if (ratio <= 0.5) {
+                const normalizedRatio = ratio * 2;
+                r = Math.round(96 + (255 - 96) * normalizedRatio);
+                g = Math.round(165 + (255 - 165) * normalizedRatio);
+                b = Math.round(250 + (255 - 250) * normalizedRatio);
+            } else {
+                const normalizedRatio = (ratio - 0.5) * 2;
+                r = Math.round(255 + (239 - 255) * normalizedRatio);
+                g = Math.round(255 + (68 - 255) * normalizedRatio);
+                b = Math.round(255 + (68 - 255) * normalizedRatio);
             }
+            return `rgb(${r}, ${g}, ${b})`;
+        }
 
-            // 2&3: 3개 짝 비중
-            if (analysis23) {
-                html += `
-                    <div class="result-section">
-                        <div class="section-title">
-                            📈 상위 3개 짝 비중 (2 & 3)
+        function getAddRatioColor(value, minValue, maxValue) {
+            if (value < minValue) value = minValue;
+            if (value > maxValue) value = maxValue;
+            const ratio = (value - minValue) / (maxValue - minValue);
+            let r, g, b;
+            if (ratio <= 0.5) {
+                const normalizedRatio = ratio * 2;
+                r = Math.round(96 + (255 - 96) * normalizedRatio);
+                g = Math.round(165 + (255 - 165) * normalizedRatio);
+                b = Math.round(250 + (255 - 250) * normalizedRatio);
+            } else {
+                const normalizedRatio = (ratio - 0.5) * 2;
+                r = Math.round(255 + (239 - 255) * normalizedRatio);
+                g = Math.round(255 + (68 - 255) * normalizedRatio);
+                b = Math.round(255 + (68 - 255) * normalizedRatio);
+            }
+            return `rgb(${r}, ${g}, ${b})`;
+        }
+
+        function getDividendColor(dividend) {
+            if (dividend <= 1.0) {
+                return 'rgb(96, 165, 250)';
+            } else if (dividend >= 5.0 && dividend < 7.0) {
+                return 'rgb(251, 146, 60)';
+            } else if (dividend >= 7.0) {
+                return 'rgb(239, 68, 68)';
+            } else {
+                return 'transparent';
+            }
+        }
+
+        function renderTable(data, title, hasCumulative = false) {
+            if (!data) return '';
+            const circledNumbers = ['①', '②', '③', '④', '⑤', '⑥', '⑦', '⑧', '⑨', '⑩', '⑪', '⑫', '⑬', '⑭', '⑮', '⑯'];
+            const getMax = (dataObj) => Math.max(...Object.values(dataObj));
+            const maxValues = {
+                section1: getMax(data.section1), section2: getMax(data.section2),
+                section3: getMax(data.section3), all: getMax(data.all)
+            };
+            if (hasCumulative && data.cumulative) maxValues.cumulative = getMax(data.cumulative);
+            const colWidth = hasCumulative ? '9%' : '11%';
+            const colWidthValue = hasCumulative ? '11%' : '14%';
+
+            let html = `<div class="table-container">
+                <div class="table-title">${title}</div>
+                <table>
+                    <colgroup>
+                        <col style="width: ${colWidth}" /><col style="width: ${colWidthValue}" />
+                        <col style="width: ${colWidth}" /><col style="width: ${colWidthValue}" />
+                        <col style="width: ${colWidth}" /><col style="width: ${colWidthValue}" />
+                        <col style="width: ${colWidth}" /><col style="width: ${colWidthValue}" />
+                        ${hasCumulative ? `<col style="width: ${colWidth}" /><col style="width: ${colWidthValue}" />` : ''}
+                    </colgroup>
+                    <thead><tr>
+                        <th>첫부분</th><th></th>
+                        <th>중간</th><th></th>
+                        <th>아랫부분</th><th></th>
+                        <th>전체</th><th></th>
+                        ${hasCumulative ? `<th class="orange-bg">누적전체</th><th class="orange-bg"></th>` : ''}
+                    </tr></thead><tbody>`;
+
+            circledNumbers.forEach(num => {
+                html += `<tr>
+                    <td class="yellow-bg">${num}</td>
+                    <td class="value-cell" style="background-color: ${getGradientColor(data.section1[num], 0, maxValues.section1)}">${data.section1[num]}</td>
+                    <td class="yellow-bg">${num}</td>
+                    <td class="value-cell" style="background-color: ${getGradientColor(data.section2[num], 0, maxValues.section2)}">${data.section2[num]}</td>
+                    <td class="yellow-bg">${num}</td>
+                    <td class="value-cell" style="background-color: ${getGradientColor(data.section3[num], 0, maxValues.section3)}">${data.section3[num]}</td>
+                    <td class="yellow-bg">${num}</td>
+                    <td class="value-cell" style="background-color: ${getGradientColor(data.all[num], 0, maxValues.all)}">${data.all[num]}</td>
+                    ${hasCumulative && data.cumulative ? `
+                        <td class="yellow-bg">${num}</td>
+                        <td class="value-cell orange-bg" style="background-color: ${getGradientColor(data.cumulative[num], 0, maxValues.cumulative)}">${data.cumulative[num]}</td>
+                    ` : ''}
+                </tr>`;
+            });
+            return html + `</tbody></table></div>`;
+        }
+
+        function renderResults() {
+            let html = '<div>';
+
+            // 교차점분석1
+            if (analysis1) {
+                html += `<div class="analysis-box">
+                    <div class="analysis-title">📊 교차점분석1</div>
+                    <div class="cards-grid">`;
+                analysis1.items.forEach((item, idx) => {
+                    const bgColor = idx === 0 ? getDividendColor(item.dividend) : 'transparent';
+                    html += `<div class="card">
+                        <div class="card-label">${item.label}</div>
+                        <div class="number-display">
+                            ${item.pair.split('').map(c => `<span>${c}</span>`).join('')}
                         </div>
-                        <div class="proportion-cards">
-                `;
-                
-                analysis23.items.forEach(item => {
-                    html += `
-                        <div class="proportion-card">
-                            <div class="proportion-label">${item.label}</div>
-                            <div class="proportion-circles">
-                                ${generateCircles(item.pair, 'blue')}
-                            </div>
-                            <div class="dividend-value">${item.dividend}</div>
-                            <div class="proportion-value">${item.proportion.toFixed(2)}%</div>
-                        </div>
-                    `;
+                        <div class="dividend-value" style="background-color: ${bgColor}">${item.dividend}</div>
+                        <div class="proportion-value">${item.proportion.toFixed(2)}%</div>
+                    </div>`;
                 });
-                
-                html += `
-                        </div>
+                html += `</div><div class="ratio-grid">
+                    <div class="ratio-box yellow">
+                        <div class="ratio-label" style="color: #78716C">비율</div>
+                        <div class="ratio-value" style="color: #F59E0B">${analysis1.ratio}</div>
+                        <div class="ratio-formula" style="color: #78716C">= (${analysis1.items[0].dividend} × ${analysis1.items[1].dividend}) / ${analysis1.items[2].dividend}</div>
                     </div>
-                `;
+                    <div class="ratio-box" style="background-color: ${getAddRatioColor(parseFloat(analysis1.addRatio), 0.1, 2.0)}">
+                        <div class="ratio-label" style="color: black">더하기 비율</div>
+                        <div class="ratio-value" style="color: black">${analysis1.addRatio}</div>
+                        <div class="ratio-formula" style="color: black">= (${analysis1.items[0].dividend} + ${analysis1.items[1].dividend}) / ${analysis1.items[2].dividend}</div>
+                    </div>
+                </div></div>`;
             }
 
-            // 3&4: 전체 데이터 중 상위 3개
-            html += `
-                <div class="result-section">
-                    <div class="section-title">
-                        🎯 전체 데이터 중 상위 3개 (3 & 4)
-                    </div>
-                    <div class="proportion-cards">
-            `;
-            
-            analysis34.items.forEach(item => {
-                html += `
-                    <div class="proportion-card">
-                        <div class="proportion-label">${item.rank}위</div>
-                        <div class="proportion-circles">
-                            ${generateCircles(item.pair, 'green')}
+            // 교차점분석2
+            if (analysis2) {
+                html += `<div class="analysis-box">
+                    <div class="analysis-title">📈 교차점분석2</div>
+                    <div class="cards-grid">`;
+                analysis2.items.forEach(item => {
+                    html += `<div class="card">
+                        <div class="card-label">${item.label}</div>
+                        <div class="number-display">
+                            ${item.pair.split('').map(c => `<span>${c}</span>`).join('')}
                         </div>
                         <div class="dividend-value">${item.dividend}</div>
                         <div class="proportion-value">${item.proportion.toFixed(2)}%</div>
+                    </div>`;
+                });
+                html += `</div><div class="ratio-grid">
+                    <div class="ratio-box yellow">
+                        <div class="ratio-label" style="color: #78716C">비율</div>
+                        <div class="ratio-value" style="color: #F59E0B">${analysis2.ratio}</div>
+                        <div class="ratio-formula" style="color: #78716C">= (${analysis2.items[0].dividend} × ${analysis2.items[1].dividend}) / ${analysis2.items[2].dividend}</div>
                     </div>
-                `;
-            });
-            
-            html += `
+                    <div class="ratio-box" style="background-color: ${getAddRatioColor(parseFloat(analysis2.addRatio), 0.1, 2.0)}">
+                        <div class="ratio-label" style="color: black">더하기 비율</div>
+                        <div class="ratio-value" style="color: black">${analysis2.addRatio}</div>
+                        <div class="ratio-formula" style="color: black">= (${analysis2.items[0].dividend} + ${analysis2.items[1].dividend}) / ${analysis2.items[2].dividend}</div>
+                    </div>
+                </div></div>`;
+            }
+
+            // 교차점분석3
+            if (analysis3) {
+                html += `<div class="analysis-box">
+                    <div class="analysis-title">🎯 교차점분석3</div>
+                    <div class="cards-grid">`;
+                analysis3.items.forEach(item => {
+                    html += `<div class="card">
+                        <div class="card-label">${item.label}</div>
+                        <div class="number-display">
+                            ${item.pair.split('').map(c => `<span>${c}</span>`).join('')}
+                        </div>
+                        <div class="dividend-value">${item.dividend}</div>
+                        <div class="proportion-value">${item.proportion.toFixed(2)}%</div>
+                    </div>`;
+                });
+                html += `</div><div class="ratio-grid">
+                    <div class="ratio-box yellow">
+                        <div class="ratio-label" style="color: #78716C">비율</div>
+                        <div class="ratio-value" style="color: #F59E0B">${analysis3.ratio}</div>
+                        <div class="ratio-formula" style="color: #78716C">= (${analysis3.items[0].dividend} × ${analysis3.items[1].dividend}) / ${analysis3.items[2].dividend}</div>
+                    </div>
+                    <div class="ratio-box" style="background-color: ${getAddRatioColor(parseFloat(analysis3.addRatio), 0.1, 2.0)}">
+                        <div class="ratio-label" style="color: black">더하기 비율</div>
+                        <div class="ratio-value" style="color: black">${analysis3.addRatio}</div>
+                        <div class="ratio-formula" style="color: black">= (${analysis3.items[0].dividend} + ${analysis3.items[1].dividend}) / ${analysis3.items[2].dividend}</div>
+                    </div>
+                </div></div>`;
+            }
+
+            // 합산 비율
+            if (analysis1 && analysis2 && analysis3) {
+                const totalAddRatio = (parseFloat(analysis1.addRatio) + parseFloat(analysis2.addRatio) + parseFloat(analysis3.addRatio)).toFixed(6);
+                html += `<div class="total-ratio-box" style="background-color: ${getAddRatioColor(parseFloat(totalAddRatio), 2.0, 5.0)}">
+                    <div class="total-ratio-title">📊 합산 비율</div>
+                    <div class="total-ratio-value">${totalAddRatio}</div>
+                    <div class="total-ratio-formula">= ${analysis1.addRatio} + ${analysis2.addRatio} + ${analysis3.addRatio}</div>
+                </div>`;
+            }
+
+            // 색상 안내
+            html += `<div class="info-box">
+                <div class="info-title">색상 안내</div>
+                <div class="gradient-bar">
+                    <div class="gradient-box">
+                        <div class="color-sample" style="background: rgb(96, 165, 250)"></div>
+                        <span>0 (최저)</span>
+                    </div>
+                    <div class="gradient-fill"></div>
+                    <div class="gradient-box">
+                        <div class="color-sample" style="background: rgb(239, 68, 68)"></div>
+                        <span>최고</span>
                     </div>
                 </div>
-            `;
-            
-            html += '</div>';
-            
-            resultsDiv.innerHTML = html;
-        }
+                <div class="info-text">각 구간별로 상대적인 빈도에 따라 색상이 그라데이션으로 표시됩니다.</div>
+            </div>`;
 
-        function generateCircles(pair, colorClass) {
-            const circles = pair.match(/[①-⑯]/g) || [];
-            return circles.map(circle => circle).join(' ');
-        }
+            html += renderTable(results.first10, "1-10줄 분석");
+            if (results.second10) html += renderTable(results.second10, "11-20줄 분석", true);
+            if (results.third10) html += renderTable(results.third10, "21-30줄 분석", true);
+            if (results.fourth10) html += renderTable(results.fourth10, "31-40줄 분석", true);
+            if (results.fifth10) html += renderTable(results.fifth10, "41-50줄 분석", true);
 
-        function displayFrequencyAnalysis(data) {
-            const frequencyDiv = document.getElementById('frequency-analysis');
-            
-            // 각 줄은 3개 짝 = 한 줄
-            const linesPerPage = 10;
-            const pairsPerLine = 3;
-            const totalLines = Math.ceil(data.length / pairsPerLine);
-            const totalPages = Math.ceil(totalLines / linesPerPage);
-            
-            let html = '';
-            
-            // 전체 누적을 위한 변수
-            let cumulativeFreq = {};
-            
-            for (let page = 0; page < totalPages; page++) {
-                const startLine = page * linesPerPage + 1;
-                const endLine = Math.min((page + 1) * linesPerPage, totalLines);
-                const startIdx = page * linesPerPage * pairsPerLine;
-                const endIdx = Math.min(startIdx + linesPerPage * pairsPerLine, data.length);
-                
-                const pageData = data.slice(startIdx, endIdx);
-                
-                // 이 페이지를 3등분
-                const third = Math.ceil(pageData.length / 3);
-                const firstPart = pageData.slice(0, third);
-                const middlePart = pageData.slice(third, third * 2);
-                const lastPart = pageData.slice(third * 2);
-                
-                // 각 부분의 빈도 계산
-                const firstFreq = countFrequency(firstPart);
-                const middleFreq = countFrequency(middlePart);
-                const lastFreq = countFrequency(lastPart);
-                const totalFreq = countFrequency(pageData);
-                
-                // 누적 빈도 업데이트
-                for (const [num, count] of Object.entries(totalFreq)) {
-                    cumulativeFreq[num] = (cumulativeFreq[num] || 0) + count;
-                }
-                
-                // 모든 등장하는 숫자 찾기
-                const allNumbers = new Set([
-                    ...Object.keys(firstFreq),
-                    ...Object.keys(middleFreq),
-                    ...Object.keys(lastFreq),
-                    ...Object.keys(totalFreq),
-                    ...Object.keys(cumulativeFreq)
-                ]);
-                
-                const sortedNumbers = Array.from(allNumbers).map(n => parseInt(n)).sort((a, b) => a - b);
-                
-                // 각 열의 최대/최소 값 계산 (색상 결정용)
-                const firstValues = sortedNumbers.map(n => firstFreq[n] || 0);
-                const middleValues = sortedNumbers.map(n => middleFreq[n] || 0);
-                const lastValues = sortedNumbers.map(n => lastFreq[n] || 0);
-                const totalValues = sortedNumbers.map(n => totalFreq[n] || 0);
-                const cumulValues = sortedNumbers.map(n => cumulativeFreq[n] || 0);
-                
-                const firstMax = Math.max(...firstValues);
-                const firstMin = Math.min(...firstValues);
-                const middleMax = Math.max(...middleValues);
-                const middleMin = Math.min(...middleValues);
-                const lastMax = Math.max(...lastValues);
-                const lastMin = Math.min(...lastValues);
-                const totalMax = Math.max(...totalValues);
-                const totalMin = Math.min(...totalValues);
-                const cumulMax = Math.max(...cumulValues);
-                const cumulMin = Math.min(...cumulValues);
-                
-                html += `
-                    <div class="frequency-section">
-                        <div class="frequency-title">${startLine}-${endLine}줄 분석</div>
-                        <table class="frequency-table">
-                            <thead>
-                                <tr>
-                                    <th>첫부분</th>
-                                    <th></th>
-                                    <th>중간</th>
-                                    <th></th>
-                                    <th>아랫부분</th>
-                                    <th></th>
-                                    <th>전체</th>
-                                    <th></th>
-                                    <th>누적</th>
-                                    <th></th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                `;
-                
-                sortedNumbers.forEach(num => {
-                    const circleChar = numberToCircle(num);
-                    const f1 = firstFreq[num] || 0;
-                    const f2 = middleFreq[num] || 0;
-                    const f3 = lastFreq[num] || 0;
-                    const ft = totalFreq[num] || 0;
-                    const fc = cumulativeFreq[num] || 0;
-                    
-                    // 각 열의 최대/최소 기준으로 색상 결정
-                    const s1 = getGradientStyle(f1, firstMin, firstMax);
-                    const s2 = getGradientStyle(f2, middleMin, middleMax);
-                    const s3 = getGradientStyle(f3, lastMin, lastMax);
-                    const st = getGradientStyle(ft, totalMin, totalMax);
-                    const sc = getGradientStyle(fc, cumulMin, cumulMax);
-                    
-                    html += `
-                        <tr>
-                            <td class="number-col"><small style="font-size: 0.85em;">${circleChar}</small></td>
-                            <td ${s1}>${f1}</td>
-                            <td class="number-col"><small style="font-size: 0.85em;">${circleChar}</small></td>
-                            <td ${s2}>${f2}</td>
-                            <td class="number-col"><small style="font-size: 0.85em;">${circleChar}</small></td>
-                            <td ${s3}>${f3}</td>
-                            <td class="number-col"><small style="font-size: 0.85em;">${circleChar}</small></td>
-                            <td ${st}>${ft}</td>
-                            <td class="number-col"><small style="font-size: 0.85em;">${circleChar}</small></td>
-                            <td ${sc}>${fc}</td>
-                        </tr>
-                    `;
-                });
-                
-                html += `
-                            </tbody>
-                        </table>
-                    </div>
-                `;
-            }
-            
-            frequencyDiv.innerHTML = html;
-        }
-
-        function countFrequency(dataSegment) {
-            const freq = {};
-            
-            dataSegment.forEach(item => {
-                const numbers = extractNumbers(item.pair);
-                numbers.forEach(num => {
-                    freq[num] = (freq[num] || 0) + 1;
-                });
-            });
-            
-            return freq;
-        }
-
-        function getGradientStyle(value, min, max) {
-            // 0인 경우 파란색
-            if (value === 0) {
-                return 'style="background-color: #BFDBFE !important; color: #333; font-size: 1.5em; font-weight: 800;"';
-            }
-            
-            // 값이 하나만 있는 경우
-            if (max === min) {
-                return 'style="background-color: #FFFFFF !important; color: #333; font-size: 1.5em; font-weight: 800;"';
-            }
-            
-            // 0~1 사이의 비율 계산 (min=0, max=1)
-            const ratio = (value - min) / (max - min);
-            const color = getGradientColor(ratio);
-            
-            return `style="background-color: ${color} !important; color: #333; font-size: 1.5em; font-weight: 800;"`;
-        }
-
-        function getGradientColor(ratio) {
-            // 이전 버전처럼 매우 선명한 색상
-            if (ratio <= 0.5) {
-                // 진한 파란색 -> 흰색
-                const t = ratio * 2; // 0~1
-                const r = Math.round(100 + (255 - 100) * t);
-                const g = Math.round(150 + (255 - 150) * t);
-                const b = 255;
-                return `rgb(${r}, ${g}, ${b})`;
-            } else {
-                // 흰색 -> 진한 빨간색
-                const t = (ratio - 0.5) * 2; // 0~1
-                const r = 255;
-                const g = Math.round(255 - (255 - 80) * t);
-                const b = Math.round(255 - (255 - 80) * t);
-                return `rgb(${r}, ${g}, ${b})`;
-            }
-        }
-
-        function numberToCircle(num) {
-            if (num >= 1 && num <= 9) {
-                return String.fromCharCode(0x245F + num);
-            } else if (num === 10) {
-                return '⑩';
-            } else if (num >= 11 && num <= 20) {
-                return String.fromCharCode(0x246A + num - 11);
-            }
-            return num.toString();
+            document.getElementById('results').innerHTML = html + '</div>';
         }
     </script>
 </body>
