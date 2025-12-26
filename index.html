@@ -484,80 +484,100 @@
                     return !nums.some(n => usedNumbers1.has(n));
                 });
                 
-                if (availablePairs.length >= 2) {
-                    const pair2_1 = availablePairs[0];
-                    const pair2_2 = availablePairs[1];
-                    
-                    const num1_1 = pair2_1.pair[0];
-                    const num1_2 = pair2_1.pair[1];
-                    const num2_1 = pair2_2.pair[0];
-                    const num2_2 = pair2_2.pair[1];
-                    
-                    let crossNum1, crossNum2;
-                    
-                    if (num1_1 === num2_1) {
-                        crossNum1 = num1_2;
-                        crossNum2 = num2_2;
-                    } else if (num1_1 === num2_2) {
-                        crossNum1 = num1_2;
-                        crossNum2 = num2_1;
-                    } else if (num1_2 === num2_1) {
-                        crossNum1 = num1_1;
-                        crossNum2 = num2_2;
-                    } else if (num1_2 === num2_2) {
-                        crossNum1 = num1_1;
-                        crossNum2 = num2_1;
-                    }
-                    
-                    const crossPair2_1 = crossNum1 + crossNum2;
-                    const crossPair2_2 = crossNum2 + crossNum1;
-                    
-                    const crossIdx1 = pairs.indexOf(crossPair2_1);
-                    const crossIdx2 = pairs.indexOf(crossPair2_2);
-                    
-                    let crossPoint2 = null;
-                    if (crossIdx1 !== -1) {
-                        crossPoint2 = {
-                            pair: crossPair2_1,
-                            dividend: dividends[crossIdx1]
-                        };
-                    } else if (crossIdx2 !== -1) {
-                        crossPoint2 = {
-                            pair: crossPair2_2,
-                            dividend: dividends[crossIdx2]
-                        };
-                    }
-                    
-                    if (crossPoint2) {
-                        const sum2 = pair2_1.dividend + pair2_2.dividend + crossPoint2.dividend;
-                        const ratio2 = ((pair2_1.dividend * pair2_2.dividend) / crossPoint2.dividend).toFixed(6);
-                        const addRatio2 = ((pair2_1.dividend + pair2_2.dividend) / crossPoint2.dividend).toFixed(6);
+                // 공통 숫자가 있는 최저 2개 짝 찾기
+                let pair2_1 = null;
+                let pair2_2 = null;
+                let crossPoint2 = null;
+                
+                for (let i = 0; i < availablePairs.length; i++) {
+                    for (let j = i + 1; j < availablePairs.length; j++) {
+                        const p1 = availablePairs[i];
+                        const p2 = availablePairs[j];
                         
-                        analysis2 = {
-                            ratio: ratio2,
-                            addRatio: addRatio2,
-                            items: [
-                                {
-                                    label: '1번짝',
-                                    pair: pair2_1.pair,
-                                    dividend: pair2_1.dividend,
-                                    proportion: (pair2_1.dividend / sum2) * 100
-                                },
-                                {
-                                    label: '2번짝',
-                                    pair: pair2_2.pair,
-                                    dividend: pair2_2.dividend,
-                                    proportion: (pair2_2.dividend / sum2) * 100
-                                },
-                                {
-                                    label: '교차점',
-                                    pair: crossPoint2.pair,
-                                    dividend: crossPoint2.dividend,
-                                    proportion: (crossPoint2.dividend / sum2) * 100
+                        const num1_1 = p1.pair[0];
+                        const num1_2 = p1.pair[1];
+                        const num2_1 = p2.pair[0];
+                        const num2_2 = p2.pair[1];
+                        
+                        let crossNum1, crossNum2;
+                        let hasCommon = false;
+                        
+                        if (num1_1 === num2_1) {
+                            crossNum1 = num1_2;
+                            crossNum2 = num2_2;
+                            hasCommon = true;
+                        } else if (num1_1 === num2_2) {
+                            crossNum1 = num1_2;
+                            crossNum2 = num2_1;
+                            hasCommon = true;
+                        } else if (num1_2 === num2_1) {
+                            crossNum1 = num1_1;
+                            crossNum2 = num2_2;
+                            hasCommon = true;
+                        } else if (num1_2 === num2_2) {
+                            crossNum1 = num1_1;
+                            crossNum2 = num2_1;
+                            hasCommon = true;
+                        }
+                        
+                        if (hasCommon) {
+                            const crossPair_1 = crossNum1 + crossNum2;
+                            const crossPair_2 = crossNum2 + crossNum1;
+                            
+                            const crossIdx1 = pairs.indexOf(crossPair_1);
+                            const crossIdx2 = pairs.indexOf(crossPair_2);
+                            
+                            if (crossIdx1 !== -1 || crossIdx2 !== -1) {
+                                pair2_1 = p1;
+                                pair2_2 = p2;
+                                
+                                if (crossIdx1 !== -1) {
+                                    crossPoint2 = {
+                                        pair: crossPair_1,
+                                        dividend: dividends[crossIdx1]
+                                    };
+                                } else {
+                                    crossPoint2 = {
+                                        pair: crossPair_2,
+                                        dividend: dividends[crossIdx2]
+                                    };
                                 }
-                            ]
-                        };
+                                break;
+                            }
+                        }
                     }
+                    if (pair2_1 && pair2_2 && crossPoint2) break;
+                }
+                
+                if (pair2_1 && pair2_2 && crossPoint2) {
+                    const sum2 = pair2_1.dividend + pair2_2.dividend + crossPoint2.dividend;
+                    const ratio2 = ((pair2_1.dividend * pair2_2.dividend) / crossPoint2.dividend).toFixed(6);
+                    const addRatio2 = ((pair2_1.dividend + pair2_2.dividend) / crossPoint2.dividend).toFixed(6);
+                    
+                    analysis2 = {
+                        ratio: ratio2,
+                        addRatio: addRatio2,
+                        items: [
+                            {
+                                label: '1번짝',
+                                pair: pair2_1.pair,
+                                dividend: pair2_1.dividend,
+                                proportion: (pair2_1.dividend / sum2) * 100
+                            },
+                            {
+                                label: '2번짝',
+                                pair: pair2_2.pair,
+                                dividend: pair2_2.dividend,
+                                proportion: (pair2_2.dividend / sum2) * 100
+                            },
+                            {
+                                label: '교차점',
+                                pair: crossPoint2.pair,
+                                dividend: crossPoint2.dividend,
+                                proportion: (crossPoint2.dividend / sum2) * 100
+                            }
+                        ]
+                    };
                 }
             }
             
@@ -577,80 +597,100 @@
                     return !nums.some(n => usedNumbers2.has(n));
                 });
                 
-                if (availablePairs.length >= 2) {
-                    const pair3_1 = availablePairs[0];
-                    const pair3_2 = availablePairs[1];
-                    
-                    const num1_1 = pair3_1.pair[0];
-                    const num1_2 = pair3_1.pair[1];
-                    const num2_1 = pair3_2.pair[0];
-                    const num2_2 = pair3_2.pair[1];
-                    
-                    let crossNum1, crossNum2;
-                    
-                    if (num1_1 === num2_1) {
-                        crossNum1 = num1_2;
-                        crossNum2 = num2_2;
-                    } else if (num1_1 === num2_2) {
-                        crossNum1 = num1_2;
-                        crossNum2 = num2_1;
-                    } else if (num1_2 === num2_1) {
-                        crossNum1 = num1_1;
-                        crossNum2 = num2_2;
-                    } else if (num1_2 === num2_2) {
-                        crossNum1 = num1_1;
-                        crossNum2 = num2_1;
-                    }
-                    
-                    const crossPair3_1 = crossNum1 + crossNum2;
-                    const crossPair3_2 = crossNum2 + crossNum1;
-                    
-                    const crossIdx1 = pairs.indexOf(crossPair3_1);
-                    const crossIdx2 = pairs.indexOf(crossPair3_2);
-                    
-                    let crossPoint3 = null;
-                    if (crossIdx1 !== -1) {
-                        crossPoint3 = {
-                            pair: crossPair3_1,
-                            dividend: dividends[crossIdx1]
-                        };
-                    } else if (crossIdx2 !== -1) {
-                        crossPoint3 = {
-                            pair: crossPair3_2,
-                            dividend: dividends[crossIdx2]
-                        };
-                    }
-                    
-                    if (crossPoint3) {
-                        const sum3 = pair3_1.dividend + pair3_2.dividend + crossPoint3.dividend;
-                        const ratio3 = ((pair3_1.dividend * pair3_2.dividend) / crossPoint3.dividend).toFixed(6);
-                        const addRatio3 = ((pair3_1.dividend + pair3_2.dividend) / crossPoint3.dividend).toFixed(6);
+                // 공통 숫자가 있는 최저 2개 짝 찾기
+                let pair3_1 = null;
+                let pair3_2 = null;
+                let crossPoint3 = null;
+                
+                for (let i = 0; i < availablePairs.length; i++) {
+                    for (let j = i + 1; j < availablePairs.length; j++) {
+                        const p1 = availablePairs[i];
+                        const p2 = availablePairs[j];
                         
-                        analysis3 = {
-                            ratio: ratio3,
-                            addRatio: addRatio3,
-                            items: [
-                                {
-                                    label: '1위',
-                                    pair: pair3_1.pair,
-                                    dividend: pair3_1.dividend,
-                                    proportion: (pair3_1.dividend / sum3) * 100
-                                },
-                                {
-                                    label: '2위',
-                                    pair: pair3_2.pair,
-                                    dividend: pair3_2.dividend,
-                                    proportion: (pair3_2.dividend / sum3) * 100
-                                },
-                                {
-                                    label: '교차점',
-                                    pair: crossPoint3.pair,
-                                    dividend: crossPoint3.dividend,
-                                    proportion: (crossPoint3.dividend / sum3) * 100
+                        const num1_1 = p1.pair[0];
+                        const num1_2 = p1.pair[1];
+                        const num2_1 = p2.pair[0];
+                        const num2_2 = p2.pair[1];
+                        
+                        let crossNum1, crossNum2;
+                        let hasCommon = false;
+                        
+                        if (num1_1 === num2_1) {
+                            crossNum1 = num1_2;
+                            crossNum2 = num2_2;
+                            hasCommon = true;
+                        } else if (num1_1 === num2_2) {
+                            crossNum1 = num1_2;
+                            crossNum2 = num2_1;
+                            hasCommon = true;
+                        } else if (num1_2 === num2_1) {
+                            crossNum1 = num1_1;
+                            crossNum2 = num2_2;
+                            hasCommon = true;
+                        } else if (num1_2 === num2_2) {
+                            crossNum1 = num1_1;
+                            crossNum2 = num2_1;
+                            hasCommon = true;
+                        }
+                        
+                        if (hasCommon) {
+                            const crossPair_1 = crossNum1 + crossNum2;
+                            const crossPair_2 = crossNum2 + crossNum1;
+                            
+                            const crossIdx1 = pairs.indexOf(crossPair_1);
+                            const crossIdx2 = pairs.indexOf(crossPair_2);
+                            
+                            if (crossIdx1 !== -1 || crossIdx2 !== -1) {
+                                pair3_1 = p1;
+                                pair3_2 = p2;
+                                
+                                if (crossIdx1 !== -1) {
+                                    crossPoint3 = {
+                                        pair: crossPair_1,
+                                        dividend: dividends[crossIdx1]
+                                    };
+                                } else {
+                                    crossPoint3 = {
+                                        pair: crossPair_2,
+                                        dividend: dividends[crossIdx2]
+                                    };
                                 }
-                            ]
-                        };
+                                break;
+                            }
+                        }
                     }
+                    if (pair3_1 && pair3_2 && crossPoint3) break;
+                }
+                
+                if (pair3_1 && pair3_2 && crossPoint3) {
+                    const sum3 = pair3_1.dividend + pair3_2.dividend + crossPoint3.dividend;
+                    const ratio3 = ((pair3_1.dividend * pair3_2.dividend) / crossPoint3.dividend).toFixed(6);
+                    const addRatio3 = ((pair3_1.dividend + pair3_2.dividend) / crossPoint3.dividend).toFixed(6);
+                    
+                    analysis3 = {
+                        ratio: ratio3,
+                        addRatio: addRatio3,
+                        items: [
+                            {
+                                label: '1위',
+                                pair: pair3_1.pair,
+                                dividend: pair3_1.dividend,
+                                proportion: (pair3_1.dividend / sum3) * 100
+                            },
+                            {
+                                label: '2위',
+                                pair: pair3_2.pair,
+                                dividend: pair3_2.dividend,
+                                proportion: (pair3_2.dividend / sum3) * 100
+                            },
+                            {
+                                label: '교차점',
+                                pair: crossPoint3.pair,
+                                dividend: crossPoint3.dividend,
+                                proportion: (crossPoint3.dividend / sum3) * 100
+                            }
+                        ]
+                    };
                 }
             }
             
