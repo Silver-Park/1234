@@ -397,46 +397,65 @@
             let crossPoint1 = null;
             
             if (sortedData.length >= 2) {
-                lowest1 = sortedData[0];
-                lowest2 = sortedData[1];
-                
-                const num1_1 = lowest1.pair[0];
-                const num1_2 = lowest1.pair[1];
-                const num2_1 = lowest2.pair[0];
-                const num2_2 = lowest2.pair[1];
-                
-                let crossNum1, crossNum2;
-                
-                if (num1_1 === num2_1) {
-                    crossNum1 = num1_2;
-                    crossNum2 = num2_2;
-                } else if (num1_1 === num2_2) {
-                    crossNum1 = num1_2;
-                    crossNum2 = num2_1;
-                } else if (num1_2 === num2_1) {
-                    crossNum1 = num1_1;
-                    crossNum2 = num2_2;
-                } else if (num1_2 === num2_2) {
-                    crossNum1 = num1_1;
-                    crossNum2 = num2_1;
-                }
-                
-                const crossPair1_1 = crossNum1 + crossNum2;
-                const crossPair1_2 = crossNum2 + crossNum1;
-                
-                const crossIdx1 = pairs.indexOf(crossPair1_1);
-                const crossIdx2 = pairs.indexOf(crossPair1_2);
-                
-                if (crossIdx1 !== -1) {
-                    crossPoint1 = {
-                        pair: crossPair1_1,
-                        dividend: dividends[crossIdx1]
-                    };
-                } else if (crossIdx2 !== -1) {
-                    crossPoint1 = {
-                        pair: crossPair1_2,
-                        dividend: dividends[crossIdx2]
-                    };
+                // 공통 숫자가 있는 최저 2개 짝 찾기
+                for (let i = 0; i < sortedData.length; i++) {
+                    for (let j = i + 1; j < sortedData.length; j++) {
+                        const p1 = sortedData[i];
+                        const p2 = sortedData[j];
+                        
+                        const num1_1 = p1.pair[0];
+                        const num1_2 = p1.pair[1];
+                        const num2_1 = p2.pair[0];
+                        const num2_2 = p2.pair[1];
+                        
+                        let crossNum1, crossNum2;
+                        let hasCommon = false;
+                        
+                        if (num1_1 === num2_1) {
+                            crossNum1 = num1_2;
+                            crossNum2 = num2_2;
+                            hasCommon = true;
+                        } else if (num1_1 === num2_2) {
+                            crossNum1 = num1_2;
+                            crossNum2 = num2_1;
+                            hasCommon = true;
+                        } else if (num1_2 === num2_1) {
+                            crossNum1 = num1_1;
+                            crossNum2 = num2_2;
+                            hasCommon = true;
+                        } else if (num1_2 === num2_2) {
+                            crossNum1 = num1_1;
+                            crossNum2 = num2_1;
+                            hasCommon = true;
+                        }
+                        
+                        if (hasCommon) {
+                            const crossPair1_1 = crossNum1 + crossNum2;
+                            const crossPair1_2 = crossNum2 + crossNum1;
+                            
+                            const crossIdx1 = pairs.indexOf(crossPair1_1);
+                            const crossIdx2 = pairs.indexOf(crossPair1_2);
+                            
+                            if (crossIdx1 !== -1) {
+                                lowest1 = p1;
+                                lowest2 = p2;
+                                crossPoint1 = {
+                                    pair: crossPair1_1,
+                                    dividend: dividends[crossIdx1]
+                                };
+                                break;
+                            } else if (crossIdx2 !== -1) {
+                                lowest1 = p1;
+                                lowest2 = p2;
+                                crossPoint1 = {
+                                    pair: crossPair1_2,
+                                    dividend: dividends[crossIdx2]
+                                };
+                                break;
+                            }
+                        }
+                    }
+                    if (lowest1 && lowest2 && crossPoint1) break;
                 }
                 
                 if (crossPoint1) {
