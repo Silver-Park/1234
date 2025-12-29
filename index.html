@@ -843,6 +843,16 @@
             }
         }
 
+        function getTotalRatioColor(value) {
+            if (value < 100) {
+                return 'rgb(239, 68, 68)'; // 빨간색
+            } else if (value >= 100 && value < 200) {
+                return 'rgb(251, 146, 60)'; // 주황색
+            } else {
+                return 'white'; // 하얀색
+            }
+        }
+
         function renderTable(data, title, hasCumulative = false) {
             if (!data) return '';
             const circledNumbers = ['①', '②', '③', '④', '⑤', '⑥', '⑦', '⑧', '⑨', '⑩', '⑪', '⑫', '⑬', '⑭', '⑮', '⑯'];
@@ -990,6 +1000,14 @@
                     <div class="total-ratio-title">📊 합산 비율</div>
                     <div class="total-ratio-value">${totalAddRatio}</div>
                     <div class="total-ratio-formula">= ${analysis1.addRatio} + ${analysis2.addRatio} + ${analysis3.addRatio}</div>
+                </div>`;
+                
+                // 복승비율
+                const bokseungRatio = (analysis3.items[2].dividend / analysis1.items[0].dividend).toFixed(6);
+                html += `<div class="total-ratio-box" style="background-color: ${getTotalRatioColor(parseFloat(bokseungRatio))}">
+                    <div class="total-ratio-title">🎯 복승비율</div>
+                    <div class="total-ratio-value">${bokseungRatio}</div>
+                    <div class="total-ratio-formula">= ${analysis3.items[2].dividend} ÷ ${analysis1.items[0].dividend}</div>
                 </div>`;
             }
 
